@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WarehouseMagementApi.Data;
-using WarehouseMagementApi.DTOs;
-using WarehouseMagementApi.Models;
+using WarehouseManagementApi.Data;
+using WarehouseManagementApi.DTOs;
+using WarehouseManagementApi.Models;
 
-namespace WarehouseMagementApi.Controllers;
+namespace WarehouseManagementApi.Controllers;
 
 [Authorize(Roles = "Administrator")]
 [ApiController]

@@ -2,10 +2,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using WarehouseMagementApi.Data;
-using WarehouseMagementApi.Models;
+using WarehouseManagementApi.Data;
+using WarehouseManagementApi.Models;
 
-namespace WarehouseMagementApi.Services;
+namespace WarehouseManagementApi.Services;
 
 public class AuthService
 {

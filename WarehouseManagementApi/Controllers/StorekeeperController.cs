@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WarehouseMagementApi.Data;
-using WarehouseMagementApi.Models;
+using WarehouseManagementApi.Data;
+using WarehouseManagementApi.Models;
 
-namespace WarehouseMagementApi.Controllers;
+namespace WarehouseManagementApi.Controllers;
 
 [Authorize(Roles = "Storekeeper")]
 [ApiController]

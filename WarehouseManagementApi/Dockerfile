@@ -12,21 +12,21 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["WarehouseMagementApi.csproj", "WarehouseMagementApi/"]
-RUN dotnet restore "WarehouseMagementApi/WarehouseMagementApi.csproj"
+COPY ["WarehouseManagementApi.csproj", "WarehouseManagementApi/"]
+RUN dotnet restore "WarehouseManagementApi/WarehouseManagementApi.csproj"
 
-WORKDIR "/src/WarehouseMagementApi"
+WORKDIR "/src/WarehouseManagementApi"
 COPY . .
 
-RUN dotnet build "WarehouseMagementApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "WarehouseManagementApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "WarehouseMagementApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "WarehouseManagementApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "WarehouseMagementApi.dll"]
+ENTRYPOINT ["dotnet", "WarehouseManagementApi.dll"]

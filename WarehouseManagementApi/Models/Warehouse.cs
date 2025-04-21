@@ -1,4 +1,4 @@
-﻿namespace WarehouseMagementApi.Models;
+﻿namespace WarehouseManagementApi.Models;
 
 public class Warehouse
 {

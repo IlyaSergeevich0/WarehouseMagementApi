@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using WarehouseMagementApi.Data;
-using WarehouseMagementApi.Services;
+using WarehouseManagementApi.Data;
+using WarehouseManagementApi.Services;
 
 internal sealed class Program
 {

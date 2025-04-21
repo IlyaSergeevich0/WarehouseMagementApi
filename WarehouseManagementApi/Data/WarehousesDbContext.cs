@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WarehouseMagementApi.Models;
+using WarehouseManagementApi.Models;
 
-namespace WarehouseMagementApi.Data;
+namespace WarehouseManagementApi.Data;
 
 public class WarehousesDbContext : DbContext
 {
