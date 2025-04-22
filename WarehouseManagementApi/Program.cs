@@ -71,7 +71,7 @@ internal sealed class Program
             app.UseSwaggerUI(options => {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Warehouse Management API v1");
                 options.RoutePrefix = string.Empty; // Swagger UI at the root
-            });            
+            });
         }
 
         app.UseHttpsRedirection();

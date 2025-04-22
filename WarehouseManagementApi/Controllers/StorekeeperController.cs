@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WarehouseManagementApi.Data;
+using WarehouseManagementApi.DTOs;
 using WarehouseManagementApi.Models;
 
 namespace WarehouseManagementApi.Controllers;
@@ -18,11 +19,19 @@ public class StorekeeperController : ControllerBase
     }
 
     [HttpPost("add-product")]
-    public async Task<IActionResult> AddProduct([FromBody] Product product)
+    public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
     {
+        var product = new Product {
+            Name = productDto.Name,
+            Quantity = productDto.Quantity,
+            StorageZoneId = productDto.StorageZoneId
+        };
+
         _context.Products.Add(product);
+
         await _context.SaveChangesAsync();
-        return Ok(product);
+
+        return Ok();
     }
 
     [HttpDelete("remove-product/{id}")]
@@ -30,22 +39,29 @@ public class StorekeeperController : ControllerBase
     {
         var product = await _context.Products.FindAsync(id);
 
-        if (product == null)
+        if (product is null)
             return NotFound();
 
         _context.Products.Remove(product);
+
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
     [HttpPost("add-storage-zone")]
-    public async Task<IActionResult> AddStorageZone([FromBody] StorageZone storageZone)
+    public async Task<IActionResult> AddStorageZone([FromBody] StorageZoneDto storageZoneDto)
     {
+        var storageZone = new StorageZone {
+            Name = storageZoneDto.Name,
+            WarehouseId = storageZoneDto.WarehouseId
+        };
+
         _context.StorageZones.Add(storageZone);
+
         await _context.SaveChangesAsync();
 
-        return Ok(storageZone);
+        return Ok();
     }
 
     [HttpDelete("delete-storage-zone/{id}")]
@@ -57,6 +73,7 @@ public class StorekeeperController : ControllerBase
             return NotFound();
 
         _context.StorageZones.Remove(storageZone);
+
         await _context.SaveChangesAsync();
 
         return NoContent();
@@ -76,8 +93,9 @@ public class StorekeeperController : ControllerBase
             return NotFound("Target storage zone not found");
 
         product.StorageZoneId = targetStorageZoneId;
+
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = "Product moved successfully" });
+        return Ok();
     }
 }
