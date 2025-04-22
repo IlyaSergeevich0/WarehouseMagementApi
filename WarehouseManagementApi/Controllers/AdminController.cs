@@ -7,9 +7,9 @@ using WarehouseManagementApi.Models;
 
 namespace WarehouseManagementApi.Controllers;
 
-[Authorize(Roles = "Administrator")]
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Administrator")]
 public class AdminController : ControllerBase
 {
     private readonly WarehousesDbContext _context;

@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,9 +19,9 @@ public class AuthService
         _configuration = configuration;
     }
 
-    public User? ValidateUser(string username, string password)
+    public async Task<User?> ValidateUser(string username, string password)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Username == username);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
         if (user == null)
             return null;
