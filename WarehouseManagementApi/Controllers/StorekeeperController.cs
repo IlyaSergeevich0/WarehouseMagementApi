@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WarehouseManagementApi.Data;
 using WarehouseManagementApi.DTOs;
 using WarehouseManagementApi.Models;
 
 namespace WarehouseManagementApi.Controllers;
 
-[Authorize(Roles = "Storekeeper")]
+// TODO: get all storekeepers
+// TODO: get all warehouses
+
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "Storekeeper")]
 public class StorekeeperController : ControllerBase
 {
     private readonly WarehousesDbContext _context;
@@ -19,12 +23,12 @@ public class StorekeeperController : ControllerBase
     }
 
     [HttpPost("add-product")]
+    [ProducesResponseType<OkResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddProduct([FromBody] ProductDto productDto)
     {
         var product = new Product {
             Name = productDto.Name,
-            Quantity = productDto.Quantity,
-            StorageZoneId = productDto.StorageZoneId
+            Quantity = productDto.Quantity
         };
 
         _context.Products.Add(product);
@@ -35,6 +39,8 @@ public class StorekeeperController : ControllerBase
     }
 
     [HttpDelete("remove-product/{id}")]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<NoContentResult>(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> RemoveProduct(int id)
     {
         var product = await _context.Products.FindAsync(id);
@@ -50,6 +56,7 @@ public class StorekeeperController : ControllerBase
     }
 
     [HttpPost("add-storage-zone")]
+    [ProducesResponseType<OkResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddStorageZone([FromBody] StorageZoneDto storageZoneDto)
     {
         var storageZone = new StorageZone {
@@ -65,6 +72,8 @@ public class StorekeeperController : ControllerBase
     }
 
     [HttpDelete("delete-storage-zone/{id}")]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<NoContentResult>(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteStorageZone(int id)
     {
         var storageZone = await _context.StorageZones.FindAsync(id);
@@ -80,6 +89,8 @@ public class StorekeeperController : ControllerBase
     }
 
     [HttpPost("move-product")]
+    [ProducesResponseType<NotFoundObjectResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<OkResult>(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> MoveProduct(int productId, int targetStorageZoneId)
     {
         var product = await _context.Products.FindAsync(productId);
@@ -97,5 +108,27 @@ public class StorekeeperController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok();
+    }
+
+    [HttpGet("products")]
+    public async Task<ActionResult<List<ProductDto>>> GetProducts()
+    {
+        var products = await _context.Products.Select(p => new ProductDto {
+            Name = p.Name,
+            Quantity = p.Quantity
+        }).ToListAsync();
+
+        return Ok(products);
+    }
+
+    [HttpGet("storage-zones")]
+    public async Task<ActionResult<List<StorageZoneDto>>> GetStorageZones()
+    {
+        var storageZones = await _context.StorageZones.Select(s => new StorageZoneDto {
+            Name = s.Name,
+            WarehouseId = s.WarehouseId
+        }).ToListAsync();
+
+        return Ok(storageZones);
     }
 }

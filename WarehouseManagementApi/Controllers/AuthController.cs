@@ -16,6 +16,8 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [ProducesResponseType<AuthResponseDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<UnauthorizedResult>(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         var user = await _authService.ValidateUser(loginDto.Username, loginDto.Password);

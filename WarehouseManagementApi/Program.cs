@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using WarehouseManagementApi.Data;
 using WarehouseManagementApi.Services;
+using WarehouseManagementApi.Swagger;
 
 internal sealed class Program
 {
@@ -18,6 +19,8 @@ internal sealed class Program
         // Add Swagger services
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options => {
+            options.DocumentFilter<LowercaseDocumentFilter>();
+
             options.SwaggerDoc("v1", new OpenApiInfo {
                 Title = "Warehouse Management API",
                 Version = "v1",
@@ -68,9 +71,9 @@ internal sealed class Program
 
             // Enable Swagger in development
             app.UseSwagger();
-            app.UseSwaggerUI(options => {
+            app.UseSwaggerUI(options => {              
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Warehouse Management API v1");
-                options.RoutePrefix = string.Empty; // Swagger UI at the root
+                options.RoutePrefix = "docs/swagger";
             });
         }
 
