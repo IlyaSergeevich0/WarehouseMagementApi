@@ -60,7 +60,6 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("add-warehouse")]
-    [ProducesResponseType<OkObjectResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddWarehouse([FromBody] WarehouseDto warehouseDto)
     {
         var warehouse = new Warehouse {
@@ -90,7 +89,7 @@ public class AdminController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("storekeepers")]    
+    [HttpGet("storekeepers")]
     public async Task<ActionResult<List<UserDto>>> GetAllStorekeepers()
     {
         var storekeepers = await _context.Users
@@ -102,19 +101,5 @@ public class AdminController : ControllerBase
             .ToListAsync();
 
         return Ok(storekeepers);
-    }
-
-    [HttpGet("warehouses")]    
-    public async Task<ActionResult<List<WarehouseDto>>> GetAllWarehouses()
-    {
-        var warehouses = await _context.Warehouses
-            .Select(w => new WarehouseDto {
-                Id = w.Id,
-                Name = w.Name,
-                Address = w.Address
-            })
-            .ToListAsync();
-
-        return Ok(warehouses);
     }
 }

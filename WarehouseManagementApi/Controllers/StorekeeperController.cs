@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WarehouseManagementApi.Data;
 using WarehouseManagementApi.DTOs;
 using WarehouseManagementApi.Models;
@@ -123,27 +122,5 @@ public class StorekeeperController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok();
-    }
-
-    [HttpGet("products")]
-    public async Task<ActionResult<List<ProductDto>>> GetProducts()
-    {
-        var products = await _context.Products.Select(p => new ProductDto {
-            Name = p.Name,
-            Quantity = p.Quantity
-        }).ToListAsync();
-
-        return Ok(products);
-    }
-
-    [HttpGet("storage-zones")]
-    public async Task<ActionResult<List<StorageZoneDto>>> GetStorageZones()
-    {
-        var storageZones = await _context.StorageZones.Select(s => new StorageZoneDto {
-            Name = s.Name,
-            WarehouseId = s.WarehouseId
-        }).ToListAsync();
-
-        return Ok(storageZones);
     }
 }
