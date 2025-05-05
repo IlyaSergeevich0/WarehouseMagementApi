@@ -9,7 +9,7 @@ using WarehouseManagementApi.Swagger;
 
 internal sealed class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +21,39 @@ internal sealed class Program
         builder.Services.AddSwaggerGen(options => {
             options.DocumentFilter<LowercaseDocumentFilter>();
 
-            options.SwaggerDoc("v1", new OpenApiInfo {
+            options.SwaggerDoc("v2", new OpenApiInfo {
                 Title = "Warehouse Management API",
-                Version = "v1",
+                Version = "v2",
                 Description = "API for managing warehouses, storage zones, and products.",
                 Contact = new OpenApiContact {
                     Name = "Support",
                     Email = "defaultdev0x101@gmail.com"
+                }
+            });
+
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+                Description = "JWT Authorization header using the Bearer scheme.\r\n\r\n " +
+                      "Enter your token in the text input below.\r\n\r\n" +
+                      "Example: \"eyJhbGciOi...\"",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    []
                 }
             });
         });
@@ -71,8 +97,8 @@ internal sealed class Program
 
             // Enable Swagger in development
             app.UseSwagger();
-            app.UseSwaggerUI(options => {              
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Warehouse Management API v1");
+            app.UseSwaggerUI(options => {
+                options.SwaggerEndpoint("/swagger/v2/swagger.json", "Warehouse Management API v2");
                 options.RoutePrefix = "docs/swagger";
             });
         }
@@ -84,6 +110,13 @@ internal sealed class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<WarehousesDbContext>();
+
+            await dbContext.Database.EnsureCreatedAsync();
+        }
 
         app.Run();
 

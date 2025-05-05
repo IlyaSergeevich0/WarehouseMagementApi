@@ -14,6 +14,15 @@ public class WarehousesDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        var adminUser = new User {
+            Id = 1,
+            Username = "admin",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
+            Role = "Administrator"
+        };
+
+        modelBuilder.Entity<User>().HasData(adminUser);
+
         modelBuilder.Entity<StorageZone>()
             .HasOne(sz => sz.Warehouse)
             .WithMany(w => w.StorageZones)

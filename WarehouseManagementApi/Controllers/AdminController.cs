@@ -20,6 +20,8 @@ public class AdminController : ControllerBase
     }
 
     [HttpPost("register-storekeeper")]
+    [ProducesResponseType<BadRequestObjectResult>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<OkObjectResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> RegisterStorekeeper([FromBody] RegisterDto registerDto)
     {
         if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
@@ -38,6 +40,9 @@ public class AdminController : ControllerBase
     }
 
     [HttpDelete("delete-storekeeper/{id}")]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<BadRequestObjectResult>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<OkResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteStorekeeper(int id)
     {
         var user = await _context.Users.FindAsync(id);
@@ -51,12 +56,18 @@ public class AdminController : ControllerBase
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok();
     }
 
     [HttpPost("add-warehouse")]
-    public async Task<IActionResult> AddWarehouse([FromBody] Warehouse warehouse)
+    [ProducesResponseType<OkObjectResult>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> AddWarehouse([FromBody] WarehouseDto warehouseDto)
     {
+        var warehouse = new Warehouse {
+            Name = warehouseDto.Name,
+            Address = warehouseDto.Address,
+        };
+
         _context.Warehouses.Add(warehouse);
         await _context.SaveChangesAsync();
 
@@ -64,6 +75,8 @@ public class AdminController : ControllerBase
     }
 
     [HttpDelete("delete-warehouse/{id}")]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<OkResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteWarehouse(int id)
     {
         var warehouse = await _context.Warehouses.FindAsync(id);
@@ -74,6 +87,34 @@ public class AdminController : ControllerBase
         _context.Warehouses.Remove(warehouse);
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        return Ok();
+    }
+
+    [HttpGet("storekeepers")]    
+    public async Task<ActionResult<List<UserDto>>> GetAllStorekeepers()
+    {
+        var storekeepers = await _context.Users
+            .Where(u => u.Role == "Storekeeper")
+            .Select(u => new UserDto {
+                Id = u.Id,
+                Username = u.Username
+            })
+            .ToListAsync();
+
+        return Ok(storekeepers);
+    }
+
+    [HttpGet("warehouses")]    
+    public async Task<ActionResult<List<WarehouseDto>>> GetAllWarehouses()
+    {
+        var warehouses = await _context.Warehouses
+            .Select(w => new WarehouseDto {
+                Id = w.Id,
+                Name = w.Name,
+                Address = w.Address
+            })
+            .ToListAsync();
+
+        return Ok(warehouses);
     }
 }

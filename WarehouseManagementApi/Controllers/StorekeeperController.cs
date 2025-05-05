@@ -7,9 +7,6 @@ using WarehouseManagementApi.Models;
 
 namespace WarehouseManagementApi.Controllers;
 
-// TODO: get all storekeepers
-// TODO: get all warehouses
-
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Roles = "Storekeeper")]
@@ -86,6 +83,24 @@ public class StorekeeperController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpPut("change-storage-zone/{id}")]
+    [ProducesResponseType<NotFoundResult>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<OkResult>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> ChangeStorageZone(int id, [FromBody] StorageZoneDto storageZoneDto)
+    {
+        var storageZone = await _context.StorageZones.FindAsync(id);
+
+        if (storageZone == null)
+            return NotFound();
+
+        storageZone.Name = storageZoneDto.Name;
+        storageZone.WarehouseId = storageZoneDto.WarehouseId;
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 
     [HttpPost("move-product")]
