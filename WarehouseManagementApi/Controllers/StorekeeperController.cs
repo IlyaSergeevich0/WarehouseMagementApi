@@ -24,7 +24,8 @@ public class StorekeeperController : ControllerBase
     {
         var product = new Product {
             Name = productDto.Name,
-            Quantity = productDto.Quantity
+            Quantity = productDto.Quantity,
+            StorageZoneId = productDto.StorageZoneId
         };
 
         _context.Products.Add(product);
