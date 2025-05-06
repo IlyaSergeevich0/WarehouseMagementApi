@@ -22,8 +22,10 @@ public class LookupController : ControllerBase
     public async Task<ActionResult<List<ProductDto>>> GetProducts()
     {
         var products = await _context.Products.Select(p => new ProductDto {
+            Id = p.Id,
             Name = p.Name,
-            Quantity = p.Quantity
+            Quantity = p.Quantity,
+            StorageZoneId = p.StorageZoneId
         }).ToListAsync();
 
         return Ok(products);
@@ -33,6 +35,7 @@ public class LookupController : ControllerBase
     public async Task<ActionResult<List<StorageZoneDto>>> GetStorageZones()
     {
         var storageZones = await _context.StorageZones.Select(s => new StorageZoneDto {
+            Id = s.Id,
             Name = s.Name,
             WarehouseId = s.WarehouseId
         }).ToListAsync();
